@@ -16,6 +16,6 @@ exec transmission-daemon \
 	--incomplete-dir "${VARDIR}/incomplete" \
 	--watch-dir "${VARDIR}/incoming" \
 	-g "${VARDIR}/info" \
-	-a '"'"'*.*.*.*'"'"' \
+	-a '*.*.*.*' \
 	-P "${PORT}" \
 	-T
