@@ -3,7 +3,7 @@
 DOCKER_MACHINE_NAME := $(DOCKER_MACHINE_NAME)
 
 RPCPORT := 9091
-PORT    := 58080
+PORT    := 51413
 VARDIR  := $(HOME)/Downloads/transmission
 
 build:	.FORCE
@@ -19,11 +19,12 @@ run:	.FORCE
 		--net=host \
 		-e VARDIR=$(VARDIR) \
 		-p 9091:9091 \
-		-p 58080:58080 \
-		-p 58080:58080/udp \
+		-p 51413:51413 \
+		-p 51413:51413/udp \
 		-v $(VARDIR):$(VARDIR) \
 		-d \
 		rhee/transmission
+	transmission-remote -P
 
 stop:	.FORCE
 	-docker kill transmission

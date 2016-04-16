@@ -2,7 +2,7 @@ FROM centos:7
 MAINTAINER shr386.docker@outlook.com
 
 ENV RPCPORT=9091
-ENV PORT=58080
+ENV PORT=51413
 ENV VARDIR=/var/lib/transmission-daemon
 
 EXPOSE ${RPCPORT}
