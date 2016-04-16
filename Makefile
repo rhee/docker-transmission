@@ -12,10 +12,11 @@ VARDIR  := /opt/transmission/var/lib/transmission-daemon
 build:	.FORCE
 	docker build -t rhee/transmission .
 
+#--net=host
+
 run:	.FORCE
 	docker run --name=transmission \
 		--restart=unless-stopped \
-		--net="host" \
 		-u $(UID):$(GID) \
 		-e RPCPORT=$(RPCPORT) \
 		-e PORT=$(PORT) \
