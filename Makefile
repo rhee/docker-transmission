@@ -1,13 +1,10 @@
 #!/usr/bin/make
 
-DOCKER_MACHINE_NAME := $$DOCKER_MACHINE_NAME
-
-UID := $(shell id -u)
-GID := $(shell id -g)
+DOCKER_MACHINE_NAME := $(DOCKER_MACHINE_NAME)
 
 RPCPORT := 9091
 PORT    := 58080
-VARDIR  := /opt/transmission/var/lib/transmission-daemon
+VARDIR  := $(HOME)/Downloads/transmission
 
 build:	.FORCE
 	docker build -t rhee/transmission .
@@ -15,15 +12,14 @@ build:	.FORCE
 #--net=host
 
 run:	.FORCE
+	mkdir -p "$(VARDIR)"
 	docker run --name=transmission \
 		--restart=unless-stopped \
-		-u $(UID):$(GID) \
-		-e RPCPORT=$(RPCPORT) \
-		-e PORT=$(PORT) \
+		-u $$(id -u):$$(id -g) \
 		-e VARDIR=$(VARDIR) \
-		-p $(RPCPORT):$(RPCPORT) \
-		-p $(PORT):$(PORT) \
-		-p $(PORT):$(PORT)/udp \
+		-p 9091:9091 \
+		-p 58080:58080 \
+		-p 58080:58080/udp \
 		-v $(VARDIR):$(VARDIR) \
 		-d \
 		rhee/transmission
