@@ -1,12 +1,13 @@
 #!/usr/bin/make
 
-UID := $(shell id -u)
-GID := $(shell id -g)
 DOCKER_MACHINE_NAME := $$DOCKER_MACHINE_NAME
 
+UID := $(shell id -u)
+GID := $(shell id -g)
+
 RPCPORT := 9091
-PORT := 58080
-VARDIR := /opt/transmission/var/lib/transmission-daemon
+PORT    := 58080
+VARDIR  := /opt/transmission/var/lib/transmission-daemon
 
 build:	.FORCE
 	docker build -t rhee/transmission .
@@ -14,18 +15,21 @@ build:	.FORCE
 run:	.FORCE
 	docker run --name=transmission \
 		--restart=unless-stopped \
+		--net="host" \
 		-u $(UID):$(GID) \
+		-e RPCPORT=$(RPCPORT) \
+		-e PORT=$(PORT) \
+		-e VARDIR=$(VARDIR) \
 		-p $(RPCPORT):$(RPCPORT) \
 		-p $(PORT):$(PORT) \
 		-p $(PORT):$(PORT)/udp \
 		-v $(VARDIR):$(VARDIR) \
-		--net="host" \
 		-d \
 		rhee/transmission
 
-unrun:	.FORCE
+stop:	.FORCE
 	-docker kill transmission
-	-docker rm transmission
+	-docker rm -f transmission
 
 nat:	.FORCE
 	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 tcp-$(RPCPORT),tcp,,$(RPCPORT),,$(RPCPORT)

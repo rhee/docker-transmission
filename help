@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cat <<'EOB'
+
+Simple Run:
+
+docker run \
+	--name=transmission \
+	--restart=unless-stopped \
+	--net=host \
+	-p 9091:9091 \
+	-p 58080:58080 \
+	-p 58080:58080/udp \
+	-v $HOME/Downloads/transmission:/var/lib/transmission-daemon \
+	-d rhee/transmission
+
+or:
+
+docker run \
+	--name=transmission \
+	--restart=unless-stopped \
+	--net=host \
+	-u $(id -u):$(id -g) \
+	-e RPCPORT=9091 \
+	-e PORT=58080 \
+	-e VARDIR=/opt/transmission/var/lib/transmission-daemon \
+	-p 9091:9091 \
+	-p 58080:58080 \
+	-p 58080:58080/udp \
+	-v /opt/transmission/var/lib/transmission-daemon:/opt/transmission/var/lib/transmission-daemon \
+	-d \
+	rhee/transmission
+
+EOB
