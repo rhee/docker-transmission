@@ -8,11 +8,14 @@ build:	.FORCE
 	docker build -t rhee/transmission .
 
 run:	.FORCE
-	docker run --name=transmission -d \
+	docker run --name=transmission \
+		-d \
 		-p $$RPC_PORT:$$RPC_PORT \
 		-p $$PORT:$$PORT \
 		-p $$PORT:$$PORT/udp \
-		-v ~/Downloads/transmission:/opt/transmission/var/lib/transmission-daemon rhee/transmission
+		-v ~/Downloads/transmission:/opt/transmission/var/lib/transmission-daemon \
+		--net="host" \
+		rhee/transmission
 
 unrun:	.FORCE
 	-docker kill transmission
