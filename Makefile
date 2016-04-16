@@ -10,12 +10,13 @@ build:	.FORCE
 	docker build -t rhee/transmission .
 
 #--net=host
+#-u $$(id -u):$$(id -g)
 
 run:	.FORCE
 	mkdir -p "$(VARDIR)"
 	docker run --name=transmission \
 		--restart=unless-stopped \
-		-u $$(id -u):$$(id -g) \
+		--net=host \
 		-e VARDIR=$(VARDIR) \
 		-p 9091:9091 \
 		-p 58080:58080 \
