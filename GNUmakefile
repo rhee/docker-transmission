@@ -24,9 +24,9 @@ run:	.FORCE
 		-v $(VARDIR):$(VARDIR) \
 		-d \
 		rhee/transmission
-	transmission-remote -P
+	docker exec transmission transmission-remote -P
 
-stop:	.FORCE
+rm:	.FORCE
 	-docker kill transmission
 	-docker rm -f transmission
 
