@@ -7,7 +7,10 @@ COPY start.sh /
 COPY help /
 RUN chmod +x /help
 
-ADD https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64 /dumb-init
+#ADD https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64 /dumb-init
+#RUN chmod +x /dumb-init
+
+COPY dumb-init_1.0.1_amd64 /dumb-init
 RUN chmod +x /dumb-init
 
 ENV RPCPORT=9091
