@@ -11,6 +11,10 @@ build:	.FORCE
 
 #--net=host
 #-u $$(id -u):$$(id -g)
+#-p 9091:9091 \
+#-p 51413:51413 \
+#-p 51413:51413/udp \
+#
 
 run:	.FORCE
 	mkdir -p "$(VARDIR)"
@@ -18,9 +22,6 @@ run:	.FORCE
 		--restart=unless-stopped \
 		--net=host \
 		-e VARDIR=$(VARDIR) \
-		-p 9091:9091 \
-		-p 51413:51413 \
-		-p 51413:51413/udp \
 		-v $(VARDIR):$(VARDIR) \
 		-d \
 		rhee/transmission
