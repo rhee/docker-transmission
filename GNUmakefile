@@ -12,16 +12,18 @@ _build:
 	mkdir -p out opt
 	docker build -t $$IMAGE-builder src
 	docker run --name=$$CONTAINER-builder --rm \
-		-u $$(id -u):$$(id -g) \
 		-v $$PWD/out:/out \
-		-v $$PWD/opt:/opt \
-		-v $$PWD/src:/src \
 		$$IMAGE-builder
 	docker build -t $$IMAGE .
 
 #--net=host
 
 export VARDIR  := $(HOME)/Downloads/transmission
+
+rerun:	unrun run
+
+umrun:
+	docker rm -f $$CONTAINER
 
 run:	nat
 	mkdir -p "$$VARDIR"

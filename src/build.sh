@@ -4,3 +4,4 @@
 ( cd libnatpmp-20150609 ; sh ../40-build-libnatpmp.sh )
 ( cd curl-7.37.0 ; sh ../80-build-libcurl.sh )
 ( cd transmission-2.84-nofdlimit ; sh ../99-build-transmission.sh )
+tar cvzf /out/_opt-transmission.tar.gz -C / opt/transmission

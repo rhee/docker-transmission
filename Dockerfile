@@ -1,7 +1,7 @@
 FROM centos:7
 MAINTAINER shr386.docker@outlook.com
 
-ADD opt-transmission-2.82-shr-20160308.tar.gz /
+ADD out/_opt-transmission.tar.gz /
 COPY start.sh /
 
 COPY help /
