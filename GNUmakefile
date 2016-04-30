@@ -6,6 +6,7 @@ export CONTAINER=transmission
 export IMAGE=rhee/transmission
 
 build:
+	mkdir -p /tmp/$$(id -u)
 	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a /tmp/$$(id -u)/$$CONTAINER-build.log
 
 _build:
