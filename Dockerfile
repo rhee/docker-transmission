@@ -11,7 +11,7 @@ RUN chmod +x /help
 COPY dumb-init_1.0.1_amd64 /dumb-init
 RUN chmod +x /dumb-init
 
-ENV VARDIR=/var/lib/transmission-daemon
+ENV VARDIR=/transmission
 
 EXPOSE 9091
 EXPOSE 51413

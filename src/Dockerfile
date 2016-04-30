@@ -30,4 +30,4 @@ RUN sh  /src/80-build-libcurl.sh
 WORKDIR /src/transmission-2.84-nofdlimit
 RUN sh  /src/99-build-transmission.sh
 
-CMD tar cvzf /out/_opt-transmission.tar.gz -C / opt/transmission
+CMD tar cvzf /out/_opt-transmission.tar.gz -C / opt/transmission/share opt/transmission/bin opt/transmission/lib

@@ -6,7 +6,7 @@ export CONTAINER=transmission
 export IMAGE=rhee/transmission
 
 build:
-	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a build.log
+	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a /tmp/$$(id -u)/$$CONTAINER-build.log
 
 _build:
 	mkdir -p out opt
@@ -37,7 +37,7 @@ run:	nat
 		-p 51413:51413/udp \
 		-d \
 		$$IMAGE
-	docker exec $$CONTAINER transmission-remote -P
+	sleep 5 && docker exec $$CONTAINER /opt/transmission/bin/transmission-remote -P
 
 rm:	unnat
 	-docker kill $$CONTAINER

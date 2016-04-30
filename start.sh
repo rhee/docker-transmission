@@ -17,7 +17,7 @@ exec transmission-daemon \
 	--watch-dir "${VARDIR}/incoming" \
 	-g "${VARDIR}/info" \
 	-a '*.*.*.*' \
-	-p "${RPCPORT}" \
-	-P "${PORT}" \
+	-p 9091 \
+	-P 51413 \
 	-m \
 	-T
