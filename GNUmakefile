@@ -10,7 +10,7 @@ build:
 	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a /tmp/$$(id -u)/$$CONTAINER-build.log
 
 _build:
-	mkdir -p out opt
+	mkdir -p out
 	docker build -t $$IMAGE-builder src
 	docker run --name=$$CONTAINER-builder --rm \
 		-v $$PWD/out:/out \
