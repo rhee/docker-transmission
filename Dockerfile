@@ -8,24 +8,17 @@ COPY help /
 RUN chmod +x /help
 
 #ADD https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64 /dumb-init
-#RUN chmod +x /dumb-init
-
 COPY dumb-init_1.0.1_amd64 /dumb-init
 RUN chmod +x /dumb-init
 
-ENV RPCPORT=9091
-ENV PORT=51413
 ENV VARDIR=/var/lib/transmission-daemon
 
-EXPOSE ${RPCPORT}
-EXPOSE ${PORT}
-EXPOSE ${PORT}/udp
+EXPOSE 9091
+EXPOSE 51413
+EXPOSE 51413/udp
 VOLUME ${VARDIR}
 
 ENV PATH=/opt/transmission/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/transmission/lib:$LD_LIBRARY_PATH
-
-#ENTRYPOINT [ "/bin/sh" ]
-#CMD [ "/start.sh" ]
 
 CMD [ "/dumb-init", "/start.sh" ]

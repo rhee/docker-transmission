@@ -1,0 +1,4 @@
+[submodule "src/libevent-2.0.22-stable"]
+	path = src/libevent-2.0.22-stable
+	url = https://github.com/rhee/libevent.git
+	branch = origin/release-2.0.22-stable

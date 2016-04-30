@@ -1,48 +1,59 @@
 #!/usr/bin/make
 
-DOCKER_MACHINE_NAME := $(DOCKER_MACHINE_NAME)
+MAKEFILE:=$(lastword $(MAKEFILE_LIST))
 
-RPCPORT := 9091
-PORT    := 51413
-VARDIR  := $(HOME)/Downloads/transmission
+export CONTAINER=transmission
+export IMAGE=rhee/transmission
 
-build:	.FORCE
-	docker build -t rhee/transmission .
+build:
+	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a build.log
+
+_build:
+	mkdir -p out opt
+	docker build -t $$IMAGE-builder src
+	docker run --name=$$CONTAINER-builder --rm \
+		-u $$(id -u):$$(id -g) \
+		-v $$PWD/out:/out \
+		-v $$PWD/opt:/opt \
+		-v $$PWD/src:/src \
+		$$IMAGE-builder
+	docker build -t $$IMAGE .
 
 #--net=host
-#-u $$(id -u):$$(id -g)
-#-p 9091:9091 \
-#-p 51413:51413 \
-#-p 51413:51413/udp \
-#
 
-run:	.FORCE
-	mkdir -p "$(VARDIR)"
-	docker run --name=transmission \
+export VARDIR  := $(HOME)/Downloads/transmission
+
+run:	nat
+	mkdir -p "$$VARDIR"
+	docker run --name=$$CONTAINER \
 		--restart=unless-stopped \
-		--net=host \
-		-e VARDIR=$(VARDIR) \
-		-v $(VARDIR):$(VARDIR) \
+		-e VARDIR=$$VARDIR \
+		-v $$VARDIR:$$VARDIR \
+		-u $$(id -u):$$(id -g) \
+		-p 9091:9091 \
+		-p 51413:51413 \
+		-p 51413:51413/udp \
 		-d \
-		rhee/transmission
-	docker exec transmission transmission-remote -P
+		$$IMAGE
+	docker exec $$CONTAINER transmission-remote -P
 
-rm:	.FORCE
-	-docker kill transmission
-	-docker rm -f transmission
+rm:	unnat
+	-docker kill $$CONTAINER
+	-docker rm -f $$CONTAINER
 
-nat:	.FORCE
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 tcp-$(RPCPORT),tcp,,$(RPCPORT),,$(RPCPORT)
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 tcp-$(PORT),tcp,,$(PORT),,$(PORT)
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 udp-$(PORT),udp,,$(PORT),,$(PORT)
+nat:
+	-if [ ! -z "$$DOCKER_MACHINE_NAME" ]; \
+	then \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 tcp-9091,tcp,,9091,,9091 ; \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 tcp-51413,tcp,,51413,,51413 ; \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 udp-51413,udp,,51413,,51413 ; \
+	fi
 
-unnat:	.FORCE
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 delete tcp-$(RPCPORT)
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 delete tcp-$(PORT)
-	-VBoxManage controlvm $(DOCKER_MACHINE_NAME) natpf1 delete udp-$(PORT)
+unnat:
+	-if [ ! -z "$$DOCKER_MACHINE_NAME" ]; \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 delete tcp-9091 ; \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 delete tcp-51413 ; \
+	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 delete udp-51413 ; \
+	fi
 
-showconfig:	.FORCE
-	@echo PORT=$(PORT) RPCPORT=$(RPCPORT) DOCKER_MACHINE_NAME=$(DOCKER_MACHINE_NAME)
-
-.FORCE:
-.PHONY:	build
+.PHONY:	build _build run rm logs bash unrun rerun
