@@ -3,19 +3,20 @@
 MAKEFILE:=$(lastword $(MAKEFILE_LIST))
 
 export CONTAINER=transmission
-export IMAGE=rhee/transmission
+export OWNER=rhee
+export IMAGE=transmission
 
-build:
-	mkdir -p /tmp/$$(id -u)
-	$(MAKE) -f $(MAKEFILE) _build 2>&1 | tee -a /tmp/$$(id -u)/$$CONTAINER-build.log
-
-_build:
+build:	.FORCE
 	mkdir -p out opt
 	docker build -t $$IMAGE-builder src
-	docker run --name=$$CONTAINER-builder --rm \
-		-v $$PWD/out:/out \
-		$$IMAGE-builder
-	docker build -t $$IMAGE .
+	#docker run --name=$$CONTAINER-builder --rm \
+	#	-v $$PWD/out:/out \
+	#	$$IMAGE-builder
+	-docker rm $$CONTAINER-builder
+	docker create --name=$$CONTAINER-builder $$IMAGE-builder
+	mkdir -p tmp
+	docker cp $$CONTAINER-builder:/opt/transmission tmp/transmission
+	docker build -t $$OWNER/$$IMAGE .
 
 #--net=host
 
@@ -37,7 +38,7 @@ run:	nat
 		-p 51413:51413 \
 		-p 51413:51413/udp \
 		-d \
-		$$IMAGE
+		$$OWNER/$$IMAGE
 	sleep 5 && docker exec $$CONTAINER /opt/transmission/bin/transmission-remote -P
 
 rm:	unnat
@@ -59,4 +60,5 @@ unnat:
 	    VBoxManage controlvm $$DOCKER_MACHINE_NAME natpf1 delete udp-51413 ; \
 	fi
 
-.PHONY:	build _build run rm logs bash unrun rerun
+.FORCE:
+.PHONY:	.FORCE build _build run rm logs bash unrun rerun

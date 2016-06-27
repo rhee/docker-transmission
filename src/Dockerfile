@@ -1,12 +1,12 @@
-FROM centos:7
+FROM rhee/unpam-centos-6
 MAINTAINER shr386.docker@outlook.com
 
-ENV PATH=/opt/transmission/bin:/usr/lib64/ccache:$PATH
-ENV CCACHE_DIR=/opt/transmission/src/.ccache
+#ENV PATH=/opt/transmission/bin:/usr/lib64/ccache:$PATH
+#ENV CCACHE_DIR=/opt/transmission/src/.ccache
 
 RUN yum update -y -q
-RUN yum -y -q install gcc gcc-c++ make curl wget tar autoconf automake libtool ccache
-RUN yum -y -q install openssl-devel libevent2-devel
+RUN yum -y -q install gcc gcc-c++ make curl wget tar autoconf automake libtool texinfo
+RUN yum -y -q install pcre-devel libssh-devel zlib-devel openssl-devel
 
 #WORKDIR /src
 #CMD /bin/bash /src/build.sh
@@ -30,4 +30,4 @@ RUN sh  /src/80-build-libcurl.sh
 WORKDIR /src/transmission-2.84-nofdlimit
 RUN sh  /src/99-build-transmission.sh
 
-CMD tar cvzf /out/_opt-transmission.tar.gz -C / opt/transmission/share opt/transmission/bin opt/transmission/lib
+#CMD tar cvzf /out/_opt-transmission.tar.gz -C / opt/transmission/share opt/transmission/bin opt/transmission/lib

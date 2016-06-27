@@ -1,7 +1,13 @@
-FROM centos:7
+FROM rhee/unpam-centos-6
 MAINTAINER shr386.docker@outlook.com
 
-ADD out/_opt-transmission.tar.gz /
+#ADD out/_opt-transmission.tar.gz /
+
+RUN mkdir -p /opt/transmission
+COPY tmp/transmission/bin /opt/transmission/bin
+COPY tmp/transmission/lib /opt/transmission/lib
+COPY tmp/transmission/share /opt/transmission/share
+
 COPY start.sh /
 
 COPY help /

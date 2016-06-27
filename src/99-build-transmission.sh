@@ -1,6 +1,6 @@
 #!/bin/sh
-aclocal
-automake
+#aclocal
+#automake
 CFLAGS=-I/opt/transmission/include \
 LDFLAGS=-L/opt/transmission/lib \
 LIBEVENT_CFLAGS=-I/opt/transmission/include \
