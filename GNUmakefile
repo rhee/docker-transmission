@@ -7,7 +7,6 @@ export OWNER=rhee
 export IMAGE=transmission
 
 build:	.FORCE
-	mkdir -p out opt
 	docker build -t $$IMAGE-builder src
 	#docker run --name=$$CONTAINER-builder --rm \
 	#	-v $$PWD/out:/out \
@@ -27,13 +26,19 @@ rerun:	unrun run
 umrun:
 	docker rm -f $$CONTAINER
 
+#		-u $$(id -u):$$(id -g) \
+# 리눅스 호스트 도커에서는
+# -e EUID=$$(id -u)
+# docker-machine 기반 맥 도커에서는
+# -e EUID=1000
+
 run:	nat
 	mkdir -p "$$VARDIR"
 	docker run --name=$$CONTAINER \
 		--restart=unless-stopped \
+		-e EUID=1000 \
 		-e VARDIR=$$VARDIR \
 		-v $$VARDIR:$$VARDIR \
-		-u $$(id -u):$$(id -g) \
 		-p 9091:9091 \
 		-p 51413:51413 \
 		-p 51413:51413/udp \
