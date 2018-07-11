@@ -1,0 +1,9 @@
+:
+docker run --name transmission -d \
+    -e UID=$(id -u) \
+    -v $HOME/Downloads/transmission:/opt/transmission/var \
+    -v $HOME/Downloads:$HOME/Downloads \
+    -p 9091:9091 \
+    -p 51413:51413 \
+    -p 51413:51413/udp \
+    transmission:alpine3.4
