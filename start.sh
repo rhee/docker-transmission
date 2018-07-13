@@ -1,14 +1,14 @@
 #!/bin/sh
 
 mkdir -p \
-    "$VARDIR/info" \
-    "$VARDIR/info/torrents" \
-    "$VARDIR/info/resume" \
-    "$VARDIR/info/blocklists" \
-    "$VARDIR/incoming" \
-    "$VARDIR/incomplete" \
-    "$VARDIR/downloads" \
-    "$VARDIR/logs"
+    "/opt/transmission/var/info" \
+    "/opt/transmission/var/info/torrents" \
+    "/opt/transmission/var/info/resume" \
+    "/opt/transmission/var/info/blocklists" \
+    "/opt/transmission/var/incoming" \
+    "/opt/transmission/var/incomplete" \
+    "/opt/transmission/var/downloads" \
+    "/opt/transmission/var/logs"
 
 # 이걸 해 봤지만, 리눅스 호스트에 도커에서는 의미 있을 수 있지만,
 # docker-machine 기반으로 쓰는 맥 에서는 UID 가 1000 으로 바뀌어
@@ -17,29 +17,29 @@ mkdir -p \
 
 if [ ! -z "$EUID" ]; then
 
-    useradd --home "$VARDIR" --shell /bin/bash --uid "$EUID" transmission || \
-    usermod --home "$VARDIR" --shell /bin/bash --uid "$EUID" transmission
+    useradd --home "/opt/transmission/var" --shell /bin/bash --uid "$EUID" transmission || \
+    usermod --home "/opt/transmission/var" --shell /bin/bash --uid "$EUID" transmission
 
     chown -R transmission \
-	"$VARDIR/info" \
-	"$VARDIR/info/torrents" \
-	"$VARDIR/info/resume" \
-	"$VARDIR/info/blocklists" \
-	"$VARDIR/incoming" \
-	"$VARDIR/incomplete" \
-	"$VARDIR/downloads" \
-	"$VARDIR/logs"
+	"/opt/transmission/var/info" \
+	"/opt/transmission/var/info/torrents" \
+	"/opt/transmission/var/info/resume" \
+	"/opt/transmission/var/info/blocklists" \
+	"/opt/transmission/var/incoming" \
+	"/opt/transmission/var/incomplete" \
+	"/opt/transmission/var/downloads" \
+	"/opt/transmission/var/logs"
 
-    exec su transmission -c "/opt/transmission/bin/transmission-daemon  -f  -w '$VARDIR/downloads'  --incomplete-dir '$VARDIR/incomplete'  --watch-dir '$VARDIR/incoming'  -g '$VARDIR/info'  -a '*.*.*.*'  -p 9091  -P 51413  -m  -T" 
+    exec su transmission -c "/opt/transmission/bin/transmission-daemon  -f  -w '/opt/transmission/var/downloads'  --incomplete-dir '/opt/transmission/var/incomplete'  --watch-dir '/opt/transmission/var/incoming'  -g '/opt/transmission/var/info'  -a '*.*.*.*'  -p 9091  -P 51413  -m  -T" 
 
 fi
 
 exec transmission-daemon \
 	-f \
-	-w "$VARDIR/downloads" \
-	--incomplete-dir "$VARDIR/incomplete" \
-	--watch-dir "$VARDIR/incoming" \
-	-g "$VARDIR/info" \
+	-w "/opt/transmission/var/downloads" \
+	--incomplete-dir "/opt/transmission/var/incomplete" \
+	--watch-dir "/opt/transmission/var/incoming" \
+	-g "/opt/transmission/var/info" \
 	-a '*.*.*.*' \
 	-p 9091 \
 	-P 51413 \

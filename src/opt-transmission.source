@@ -1,3 +1,0 @@
-:
-case :$PATH: in *:/opt/transmission/bin:*) ;; *) PATH=/opt/transmission/bin:$PATH; export PATH; ;; esac
-case :$LD_LIBRARY_PATH: in *:/opt/transmission/lib:*) ;; *) LD_LIBRARY_PATH=/opt/transmission/lib:$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; ;; esac
